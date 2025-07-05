@@ -1,0 +1,10 @@
+{
+  "imports": {
+    "resend": "npm:resend@2.0.0",
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2.50.2"
+  },
+  "tasks": {
+    "start": "deno run --unstable --allow-net --allow-env --allow-read index.ts"
+  },
+  "nodeModulesDir": "auto"
+}
