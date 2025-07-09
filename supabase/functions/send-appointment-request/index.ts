@@ -4,53 +4,53 @@ import { Resend } from "npm:resend@2.0.0";
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers":
-        "authorization, x-client-info, apikey, content-type",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
 interface AppointmentRequest {
-    name: string;
-    email: string;
-    phone?: string;
-    service: string;
-    message?: string;
-    _date: string; // format ISO yyyy-MM-dd
-    _time: string; // ex: "14:00"
-    datetime: string; // ex: "25 juin 2025 à 14:00"
+  name: string;
+  email: string;
+  phone?: string;
+  service: string;
+  message?: string;
+  _date: string; // format ISO yyyy-MM-dd
+  _time: string; // ex: "14:00"
+  datetime: string; // ex: "25 juin 2025 à 14:00"
 }
 
 const handler = async (req: Request): Promise<Response> => {
-    if (req.method === "OPTIONS") {
-        // CORS preflight
-        return new Response(null, { headers: corsHeaders });
-    }
+  if (req.method === "OPTIONS") {
+    // CORS preflight
+    return new Response(null, { headers: corsHeaders });
+  }
 
-    if (req.method !== "POST") {
-        return new Response(
-            JSON.stringify({ error: "Method not allowed" }),
-            {
-                status: 405,
-                headers: { "Content-Type": "application/json", ...corsHeaders },
-            },
-        );
-    }
+  if (req.method !== "POST") {
+    return new Response(
+      JSON.stringify({ error: "Method not allowed" }),
+      {
+        status: 405,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      },
+    );
+  }
 
-    try {
-        const {
-            name,
-            email,
-            phone,
-            service,
-            message = "",
-            _date,
-            _time,
-            datetime,
-        }: AppointmentRequest = await req.json();
+  try {
+    const {
+      name,
+      email,
+      phone,
+      service,
+      message = "",
+      _date,
+      _time,
+      datetime,
+    }: AppointmentRequest = await req.json();
 
-        // Construire l'email à envoyer au prestataire
-        const emailToPrestataire = `
+    // Construire l'email à envoyer au prestataire
+    const emailToPrestataire = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #2d5016; border-bottom: 2px solid #4ade80; padding-bottom: 10px;">
           Nouvelle prise de rendez-vous
@@ -82,7 +82,7 @@ const handler = async (req: Request): Promise<Response> => {
       </div>
     `;
 
-        const emailToClient = `
+    const emailToClient = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #2d5016; border-bottom: 2px solid #4ade80; padding-bottom: 10px;">
           Confirmation de prise de rendez-vous
@@ -105,45 +105,45 @@ const handler = async (req: Request): Promise<Response> => {
       </div>
     `;
 
-        // Envoi des emails
-        const [prestataireResponse, clientResponse] = await Promise.all([
-            resend.emails.send({
-                from: "Juriste Vert <noreply@juristevert.com>",
-                to: ["contact@juristevert.com"],
-                subject: `Nouveau rendez-vous: ${service} - ${datetime}`,
-                html: emailToPrestataire,
-            }),
-            resend.emails.send({
-                from: "Juriste Vert <noreply@juristevert.com>",
-                to: [email],
-                subject: "Votre rendez-vous est confirmé - Juriste Vert",
-                html: emailToClient,
-            }),
-        ]);
+    // Envoi des emails
+    const [prestataireResponse, clientResponse] = await Promise.all([
+      resend.emails.send({
+        from: "Juriste Vert <noreply@juristevert.com>",
+        to: ["remyakpovi@yahoo.fr", "contact@juristevert.com"],
+        subject: `Nouveau rendez-vous: ${service} - ${datetime}`,
+        html: emailToPrestataire,
+      }),
+      resend.emails.send({
+        from: "Juriste Vert <noreply@juristevert.com>",
+        to: [email],
+        subject: "Votre rendez-vous est confirmé - Juriste Vert",
+        html: emailToClient,
+      }),
+    ]);
 
-        return new Response(
-            JSON.stringify({
-                success: true,
-                message: "Rendez-vous pris avec succès",
-                prestataireEmailId: prestataireResponse.data?.id,
-                clientEmailId: clientResponse.data?.id,
-            }),
-            {
-                status: 200,
-                headers: { "Content-Type": "application/json", ...corsHeaders },
-            },
-        );
-    } catch (error) {
-        console.error("Erreur dans send-appointment-request:", error);
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: "Rendez-vous pris avec succès",
+        prestataireEmailId: prestataireResponse.data?.id,
+        clientEmailId: clientResponse.data?.id,
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      },
+    );
+  } catch (error) {
+    console.error("Erreur dans send-appointment-request:", error);
 
-        return new Response(
-            JSON.stringify({ error: "Erreur lors de la prise de rendez-vous" }),
-            {
-                status: 500,
-                headers: { "Content-Type": "application/json", ...corsHeaders },
-            },
-        );
-    }
+    return new Response(
+      JSON.stringify({ error: "Erreur lors de la prise de rendez-vous" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      },
+    );
+  }
 };
 
 serve(handler);

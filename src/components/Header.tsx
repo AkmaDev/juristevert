@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import AppointmentDialog from "./ApointmentDialog";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -47,9 +48,11 @@ const Header = () => {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gold-500 transition-all duration-300 group-hover:w-full"></span>
               </a>
             ))}
-            <Button className="gradient-forest text-white hover:opacity-90 transition-opacity">
-              Prendre rendez-vous
-            </Button>
+            <AppointmentDialog>
+              <Button className="gradient-forest text-white hover:opacity-90 transition-opacity">
+                Prendre rendez-vous
+              </Button>
+            </AppointmentDialog>
           </nav>
 
           {/* Menu Mobile */}
