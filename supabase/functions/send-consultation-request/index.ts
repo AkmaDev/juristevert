@@ -48,7 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Envoyer l'email à contact@juristevert.com
     const emailResponse = await resend.emails.send({
       from: "Juriste Vert <noreply@juristevert.com>",
-      to: ["contact@juristevert.com"],
+      to: ["remyakpovi@yahoo.fr", "contact@juristevert.com"],
       subject: `Nouvelle demande de consultation - ${service}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">

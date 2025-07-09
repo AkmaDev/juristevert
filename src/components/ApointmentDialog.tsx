@@ -112,7 +112,7 @@ const AppointmentDialog = ({ children }: AppointmentDialogProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    console.log("Form submitted!");
     if (!selectedDate || !selectedTime) {
       toast({
         title: "Informations manquantes",

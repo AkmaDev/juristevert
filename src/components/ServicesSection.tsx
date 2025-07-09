@@ -104,10 +104,11 @@ const ServicesSection = () => {
                 </ul>
 
                 <Button
+                  asChild
                   variant="outline"
                   className="w-full border-forest-600 text-forest-700 hover:bg-forest-50 group-hover:border-gold-500 group-hover:text-gold-600 transition-colors"
                 >
-                  En savoir plus
+                  <a href="#contact">En savoir plus</a>
                 </Button>
               </CardContent>
             </Card>
@@ -125,10 +126,11 @@ const ServicesSection = () => {
               nous pouvons vous aider.
             </p>
             <Button
+              asChild
               size="lg"
               className="bg-white text-forest-700 hover:bg-gold-50 hover:text-gold-700 transition-colors"
             >
-              Consultation gratuite
+              <a href="#contact">Consultation gratuite</a>
             </Button>
           </Card>
         </div>
